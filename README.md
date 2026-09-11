@@ -2,6 +2,34 @@
 
 ## First-run dashboard wizard
 
+## LAN server and Nginx routing
+
+The Python API binds to all host interfaces by default, while Nginx is the
+single LAN entry point on port 80. The bundled Nginx configuration accepts
+client requests on the hosting computer's private address (`172.20.10.6`)
+and forwards them to the Python application on that same host address
+(`172.20.10.6:5000`). The application and Nginx do not bind or serve on
+localhost, loopback, wildcard, or fallback IP addresses.
+
+Other computers on the same network should open:
+
+```text
+http://172.20.10.6/dashboard
+```
+
+If the host receives a different private IP, replace `172.20.10.6` in
+`config\nginx-video-retriever.conf` with the current host IP, then validate
+and reload Nginx:
+
+```powershell
+nginx -t -c C:\Users\Cnrto\Downloads\Video_Retriever\config\nginx-video-retriever.conf
+nginx -s reload -c C:\Users\Cnrto\Downloads\Video_Retriever\config\nginx-video-retriever.conf
+```
+
+Windows Firewall must allow inbound TCP port 80 for other computers to
+connect. Port 5000 is the Python backend port and should not be used as the
+public dashboard URL when Nginx is running.
+
 The dashboard opens an interactive three-step setup wizard the first time it
 runs in a browser. The wizard explains the YouTube API key handler and the
 spotdl/Spotify handler. It stores only a local browser completion marker; API
@@ -237,14 +265,13 @@ requests even when it was initially opened directly from Python on port 5000.
 Port 5000 remains available as a direct-backend fallback for installations
 without Nginx.
 
-If a browser reports `Unable to reach the Video Retriever API` for
-`http://<host>:5000/api`, it is bypassing Nginx and connecting directly to the
-Python server. Check both services with
-`curl http://<host>:5000/api/health` and
-`curl http://<host>/api/health`. If the first succeeds and the second fails,
-reload Nginx and check its `logs\error.log`; if only remote clients fail,
-allow inbound TCP 80 in Windows Firewall. The expected LAN URL is the
-port-80 dashboard URL, not the direct port-5000 URL.
+The dashboard uses relative `/api/...` requests, so browser API traffic always
+returns through the page's host-IP Nginx origin. Use
+`http://<host>/api/health` to verify the complete path. Port 5000 is the
+private application hop and is not a public dashboard URL. If another
+computer cannot connect, allow inbound TCP ports 80 and 5000 for the
+application in Windows Firewall; do not substitute localhost or a loopback
+address.
 
 ## Browser extension
 
