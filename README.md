@@ -6,24 +6,24 @@
 
 The Python API binds to all host interfaces by default, while Nginx is the
 single LAN entry point on port 80. The bundled Nginx configuration accepts
-client requests on the hosting computer's private address (`172.20.10.6`)
+client requests on the hosting computer's private address (`xxx.xx.xx.x`)
 and forwards them to the Python application on that same host address
-(`172.20.10.6:5000`). The application and Nginx do not bind or serve on
+(`xxx.xx.xx.x:5000`). The application and Nginx do not bind or serve on
 localhost, loopback, wildcard, or fallback IP addresses.
 
 Other computers on the same network should open:
 
 ```text
-http://172.20.10.6/dashboard
+http://xxx.xx.xx.x/dashboard
 ```
 
-If the host receives a different private IP, replace `172.20.10.6` in
+If the host receives a different private IP, replace `xxx.xx.xx.x` in
 `config\nginx-video-retriever.conf` with the current host IP, then validate
 and reload Nginx:
 
 ```powershell
-nginx -t -c C:\Users\Cnrto\Downloads\Video_Retriever\config\nginx-video-retriever.conf
-nginx -s reload -c C:\Users\Cnrto\Downloads\Video_Retriever\config\nginx-video-retriever.conf
+nginx -t -c C:\Users\Path\To\File\nginx-video-retriever.conf
+nginx -s reload -c C:\Users\Path\To\File\nginx-video-retriever.conf
 ```
 
 Windows Firewall must allow inbound TCP port 80 for other computers to
