@@ -1,6 +1,6 @@
 # Multimedia Handler setup
 
-## First-run dashboard wizard
+## First-run dashboard wizard/The server.py file
 
 ## LAN server and Nginx routing
 
